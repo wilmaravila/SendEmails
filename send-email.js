@@ -1,18 +1,26 @@
 import nodemailer from 'nodemailer';
 
 export default async function handler(req, res) {
-
-    res.setHeader('Access-Control-Allow-Origin', '*'); // Puedes reemplazar * por 'http://localhost:8100' si quieres más seguridad
-  res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
+  // ⭐ CORS headers
+  const allowedOrigins = [
+  'http://localhost:8100',
+  'capacitor://localhost'
+];
+const origin = req.headers.origin;
+if (allowedOrigins.includes(origin)) {
+  res.setHeader('Access-Control-Allow-Origin', origin);
+}
+// O usa '*' si estás probando local
+  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
 
-  // 🔄 Manejar solicitud de preflight (OPTIONS)
+  // 🔁 Manejo de solicitud OPTIONS (preflight)
   if (req.method === 'OPTIONS') {
-    return res.status(200).end();
+    return res.status(200).end(); // Importante: responde vacío con 200
   }
-  
+
   if (req.method !== 'POST') {
-    return res.status(405).send({ error: 'Método no permitido' });
+    return res.status(405).json({ error: 'Método no permitido' });
   }
 
   const { to, subject, message } = req.body;
@@ -40,3 +48,4 @@ export default async function handler(req, res) {
     res.status(500).json({ success: false, error: error.message });
   }
 }
+
