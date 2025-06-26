@@ -1,29 +1,11 @@
 import nodemailer from 'nodemailer';
-import Cors from 'cors';
-
-// Inicializa el middleware de CORS
-const cors = Cors({
-  methods: ['GET', 'POST', 'OPTIONS'],
-  origin: ['http://localhost:8100', 'capacitor://localhost'], // Orígenes permitidos
-  credentials: true,
-});
-
-// Función para ejecutar el middleware de CORS
-function runMiddleware(req, res, fn) {
-  return new Promise((resolve, reject) => {
-    fn(req, res, (result) => {
-      if (result instanceof Error) {
-        return reject(result);
-      }
-      return resolve(result);
-    });
-  });
-}
 
 export default async function handler(req, res) {
-  // Ejecuta el middleware de CORS
-  await runMiddleware(req, res, cors);
-
+  // Configura los encabezados de CORS
+  res.setHeader('Access-Control-Allow-Origin', 'http://localhost:8100'); // Cambia esto según sea necesario
+  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+  
   // Preflight
   if (req.method === 'OPTIONS') {
     return res.status(200).end();
