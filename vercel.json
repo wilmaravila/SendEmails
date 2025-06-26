@@ -1,15 +1,13 @@
 {
-  "version": 2,
   "functions": {
-    "api/send.js": {
+    "api/*.js": {
       "runtime": "nodejs18.x"
     }
   },
   "routes": [
     {
-      "src": "/api/send",
-      "methods": ["POST", "OPTIONS"],
-      "dest": "api/send.js"
+      "src": "/api/(.*)",
+      "dest": "/api/$1.js"
     }
   ]
 }
